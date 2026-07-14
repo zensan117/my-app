@@ -2,9 +2,9 @@ import "dotenv/config";
 import express from "express";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/prisma";
+import { PrismaClient } from "@prisma/client";
 
-
+// データベース接続の準備（ .env の URL を使うぞ）
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter, log: ["query"] });
@@ -33,3 +33,4 @@ app.post("/users", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`サーバーが起動したぞ！ http://localhost:${PORT}`);
 });
+
