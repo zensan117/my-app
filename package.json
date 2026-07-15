@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "tsx index.ts",
-    "db:dev": "prisma dev"
+    "db:dev": "prisma dev",
+    "test": "node --test"
   },
   "keywords": [],
   "author": "",
