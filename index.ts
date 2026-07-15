@@ -5,7 +5,10 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 // データベース接続の準備（ .env の URL を使うぞ）
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter, log: ["query"] });
 
@@ -17,17 +20,27 @@ app.use(express.urlencoded({ extended: true }));
 
 // 一覧を表示するページ
 app.get("/", async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.render("index", { users });
+  try {
+    const users = await prisma.user.findMany();
+    res.render("index", { users });
+  } catch (error) {
+    console.error("ユーザー一覧取得エラー:", error);
+    res.status(500).send("データベース接続に失敗しました");
+  }
 });
 
 // ユーザーを追加する処理
 app.post("/users", async (req, res) => {
-  const name = req.body.name;
-  if (name) {
-    await prisma.user.create({ data: { name } });
+  try {
+    const name = req.body.name;
+    if (name) {
+      await prisma.user.create({ data: { name } });
+    }
+    res.redirect("/");
+  } catch (error) {
+    console.error("ユーザー作成エラー:", error);
+    res.status(500).send("ユーザー追加に失敗しました");
   }
-  res.redirect("/");
 });
 
 app.listen(PORT, () => {
