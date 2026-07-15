@@ -47,3 +47,28 @@ app.listen(PORT, () => {
   console.log(`サーバーが起動したぞ！ http://localhost:${PORT}`);
 });
 
+// index.ts の追加イメージ
+
+// GET /api/stats/total : 合計金額を取得するAPI
+app.get("/api/stats/total", async (req, res) => {
+  try {
+    const userId = Number(req.query.userId) || 1;
+    
+    // Prismaで金額の合計を計算
+    const aggregations = await prisma.transaction.aggregate({
+      _sum: {
+        amount: true,
+      },
+      where: {
+        userId: userId,
+      },
+    });
+
+    res.json({
+      userId: userId,
+      totalAmount: aggregations._sum.amount || 0,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "取得に失敗しました" });
+  }
+});

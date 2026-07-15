@@ -7,9 +7,25 @@ datasource db {
 }
 
 model User {
-  id   Int    @id @default(autoincrement())
-  name String
+  id           Int           @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
 }
 
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
+}
+
+model Transaction {
+  id         Int      @id @default(autoincrement())
+  amount     Int
+  createdAt  DateTime @default(now())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+}
 
 
