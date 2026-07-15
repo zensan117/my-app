@@ -4,7 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "tsx index.ts",
+    "start": "node index.js",
+    "dev": "tsx index.ts",
     "db:dev": "prisma dev"
   },
   "keywords": [],
